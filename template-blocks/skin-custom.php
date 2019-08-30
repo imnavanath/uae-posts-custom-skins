@@ -44,7 +44,7 @@ class Skin_Classic extends Skin_Style {
 	 * @since 1.7.0
 	 * @access public
 	 */
-	public function render_featured_image_featured_post() {
+	public function render() {
 
 		$settings = self::$settings;
 

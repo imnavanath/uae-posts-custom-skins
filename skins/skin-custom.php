@@ -127,13 +127,16 @@ class Skin_Custom extends Skin_Base {
 	 */
 	public function render() {
 
-		$settings = $this->parent->get_settings_for_display();
+		$settings = $this->parent->get_settings();
 
 		$skin = Skin_Init::get_instance( $this->get_id() );
 
-		echo '<xmp>';
-		var_dump($skin);
-		wp_die();
+		// echo $this->get_id();
+		// echo 'Nav';
+
+		// echo '<pre>';
+		// var_dump($settings);
+		// wp_die();
 
 		echo $skin->render( $this->get_id(), $settings, $this->parent->get_id() );
 	}
