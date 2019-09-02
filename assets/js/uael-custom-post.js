@@ -1,13 +1,11 @@
 ( function( $ ) {
 
-    var loadStatus = true;
+	var loadStatus = true;
 	var count = 1;
 	var loader = '';
 	var total = 0;
 
 	function _equal_height( slider_wrapper ) {
-
-		console.log(slider_wrapper);
 
 		var post_wrapper = slider_wrapper.find('.uael-post-wrapper'),
             post_active = slider_wrapper.find('.slick-active'),
@@ -61,7 +59,7 @@
         });
 	}
 
-	var UAELCustomPostGridHandler = function( $scope, $ ) {
+	var WidgetUAELPostGridHandler = function( $scope, $ ) {
 
 		if ( 'undefined' == typeof $scope ) {
 			return;
@@ -317,7 +315,7 @@
 		$.ajax({
 			url: uael.ajax_url,
 			data: {
-				action: 'uael_get_post',
+				action: 'uael_get_post_custom_skin',
 				page_id : $obj.page_id,
 				widget_id: $obj.widget_id,
 				category: $obj.filter,
@@ -380,11 +378,9 @@
 		});
 	}
 
-    $( window ).on( 'elementor/frontend/init', function () {
+	$( window ).on( 'elementor/frontend/init', function () {
 
-        console.log('in custom post skin JS');
-
-        elementorFrontend.hooks.addAction( 'frontend/element_ready/uael-posts.custom', UAELCustomPostGridHandler );
-    });
+		elementorFrontend.hooks.addAction( 'frontend/element_ready/uael-posts.custom', WidgetUAELPostGridHandler );
+	});
 
 } )( jQuery );

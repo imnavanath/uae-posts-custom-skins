@@ -310,7 +310,6 @@ class Skin_Custom extends Skin_Base {
 			global $post;
 			$settings            = $this->parent->get_settings();
 			$skin                = 'custom';
-			$skin_id			 = 'custom';
 			$wrapper             = $this->get_wrapper_classes();
 			$outer_wrapper       = $this->get_outer_wrapper_classes();
 			$structure           = $settings[ 'custom_post_structure'];

@@ -70,7 +70,18 @@ if ( ! class_exists( 'UAE_Posts_Skin_Loader' ) ) :
 		 */
 		function uae_post_custom_skins_init() {
 
-			wp_enqueue_script( 'uael-custom-post-skins', UAE_POSTS_SKINS_URL . 'assets/js/uael-custom-post.js', array( 'jquery' ), UAE_POSTS_SKINS_VER );
+			wp_register_script( 'uael-custom-post-skins', UAE_POSTS_SKINS_URL . 'assets/js/uael-custom-post.js', array( 'jquery' ), UAE_POSTS_SKINS_VER, true );
+
+
+			$uael_localize = apply_filters(
+				'uael_js_localize',
+				array(
+					'ajax_url' => admin_url( 'admin-ajax.php' ),
+				)
+			);
+			wp_localize_script( 'uael-custom-post-skins', 'uael', $uael_localize );
+
+			wp_enqueue_script( 'uael-custom-post-skins' );
 
 			// Load Document type.
 			require_once UAE_POSTS_SKINS_DIR . 'theme-builder/init.php';
