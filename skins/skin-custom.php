@@ -517,7 +517,7 @@ class Skin_Custom extends Skin_Base {
 	 */
 	protected function open_post_header() {
 		?>
-			<div class="uael-post-wrapper">
+			<div class="uael-post-wrapper <?php echo wp_kses_post( $this->get_category_name() ); ?>">
 		<?php
 	}
 
@@ -542,6 +542,24 @@ class Skin_Custom extends Skin_Base {
 	private function get_current_ID( $id ) {
 		$newid = apply_filters( 'wpml_object_id', $id, 'elementor_library', TRUE  );
 		return $newid ? $newid : $id;
+	}
+
+	/**
+	 * Get category name.
+	 *
+	 * Adds the category class.
+	 *
+	 * @since 1.0.1
+	 * @access public
+	 */
+	public function get_category_name() {
+
+		foreach ( get_the_category( get_the_ID() ) as $category ) {
+
+			$category_name = str_replace( ' ', '-', $category->name );
+
+			echo esc_attr( strtolower( $category_name ) ) . ' ';
+		}
 	}
 
 	/**
