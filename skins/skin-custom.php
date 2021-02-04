@@ -396,12 +396,12 @@ class Skin_Custom extends Skin_Base {
 		echo ob_get_clean();
 	}
 
-		/**
+	/**
 	 * Get Filters.
 	 *
 	 * Returns the Filter HTML.
 	 *
-	 * @since 1.7.0
+	 * @since 1.0.1
 	 * @access public
 	 */
 	public function render_filters() {
@@ -458,7 +458,7 @@ class Skin_Custom extends Skin_Base {
 	 *
 	 * Returns the Filter array of objects.
 	 *
-	 * @since 1.7.0
+	 * @since 1.0.1
 	 * @access public
 	 */
 	public function get_filter_values() {
