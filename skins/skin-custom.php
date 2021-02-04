@@ -288,6 +288,20 @@ class Skin_Custom extends Skin_Base {
 		return implode( ' ', $attributes );
 	}
 
+	
+	/**
+	 * Render output on the frontend.
+	 *
+	 * Written in PHP and used to generate the final HTML.
+	 *
+	 * @since 1.0.1
+	 * @access public
+	 */
+	public function get_header() {
+
+		$this->render_filters();
+	}
+
 	/**
 	 * Get body.
 	 *
@@ -300,6 +314,7 @@ class Skin_Custom extends Skin_Base {
 
 		?>
 			<div class="uael-post__header">
+				<?php $this->get_header(); ?>
 			</div>
 
 			<div class="uael-post__body">
@@ -382,6 +397,119 @@ class Skin_Custom extends Skin_Base {
 	}
 
 	/**
+	 * Get Filters.
+	 *
+	 * Returns the Filter HTML.
+	 *
+	 * @since 1.0.1
+	 * @access public
+	 */
+	public function render_filters() {
+
+		$settings       = $this->parent->get_settings();
+		$skin           = 'custom';
+		$tab_responsive = '';
+
+		if ( 'yes' === $this->get_instance_value( 'tabs_dropdown' ) ) {
+			$tab_responsive = ' uael-posts-tabs-dropdown';
+		}
+
+		if ( 'yes' !== $this->get_instance_value( 'show_filters' ) || 'main' === $settings['query_type'] ) {
+			return;
+		}
+
+		if ( ! in_array( $this->get_instance_value( 'post_structure' ), array( 'masonry', 'normal' ), true ) ) {
+			return;
+		}
+
+		$filters = $this->get_filter_values();
+		$filters = apply_filters( 'uael_posts_filterable_tabs', $filters, $settings );
+		$all     = $this->get_instance_value( 'filters_all_text' );
+
+		$all_text = ( 'All' === $all || '' === $all ) ? esc_attr__( 'All', 'uael' ) : $all;
+
+		?>
+		<div class="uael-post__header-filters-wrap<?php echo esc_attr( $tab_responsive ); ?>">
+			<ul class="uael-post__header-filters" aria-label="<?php esc_attr_e( 'Taxonomy Filter', 'uael' ); ?>">
+				<li class="uael-post__header-filter uael-filter__current" data-filter="*"><?php echo wp_kses_post( $all_text ); ?></li>
+				<?php foreach ( $filters as $key => $value ) { ?>
+				<li class="uael-post__header-filter" data-filter="<?php echo '.' . esc_attr( $value->slug ); ?>" tabindex="0"><?php echo esc_attr( $value->name ); ?></li>
+				<?php } ?>
+			</ul>
+
+			<?php if ( 'yes' === $this->get_instance_value( 'tabs_dropdown' ) ) { ?>
+				<div class="uael-filters-dropdown">
+					<div class="uael-filters-dropdown-button"><?php echo wp_kses_post( $all_text ); ?><i class="fa fa-angle-down"></i></div>
+
+					<ul class="uael-filters-dropdown-list uael-post__header-filters">
+						<li class="uael-filters-dropdown-item uael-post__header-filter uael-filter__current" data-filter="*"><?php echo wp_kses_post( $all_text ); ?></li>
+						<?php foreach ( $filters as $key => $value ) { ?>
+						<li class="uael-filters-dropdown-item uael-post__header-filter" data-filter="<?php echo '.' . esc_attr( $value->slug ); ?>"><?php echo esc_attr( $value->name ); ?></li>
+						<?php } ?>
+					</ul>
+				</div>
+			<?php } ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Get Filter taxonomy array.
+	 *
+	 * Returns the Filter array of objects.
+	 *
+	 * @since 1.0.1
+	 * @access public
+	 */
+	public function get_filter_values() {
+
+		$settings       = $this->parent->get_settings();
+		$skin           = 'custom';
+
+		$post_type = $settings['post_type_filter'];
+
+		$filter_by = $this->get_instance_value( 'tax_masonry_' . $post_type . '_filter' );
+
+		$filter_type = $settings[ $filter_by . '_' . $post_type . '_filter_rule' ];
+
+		$filters = $settings[ 'tax_' . $filter_by . '_' . $post_type . '_filter' ];
+
+		// Get the categories for post types.
+		$taxs = get_terms( $filter_by );
+
+		$filter_array = array();
+
+		if ( is_wp_error( $taxs ) ) {
+			return array();
+		}
+
+		if ( empty( $filters ) || '' === $filters ) {
+
+			$filter_array = $taxs;
+		} else {
+
+			foreach ( $taxs as $key => $value ) {
+
+				if ( 'IN' === $filter_type ) {
+
+					if ( in_array( $value->slug, $filters, true ) ) {
+
+						$filter_array[] = $value;
+					}
+				} else {
+
+					if ( ! in_array( $value->slug, $filters, true ) ) {
+
+						$filter_array[] = $value;
+					}
+				}
+			}
+		}
+
+		return $filter_array;
+	}
+
+	/**
 	 * Open Post Header.
 	 *
 	 * @since 1.0.0
@@ -389,7 +517,7 @@ class Skin_Custom extends Skin_Base {
 	 */
 	protected function open_post_header() {
 		?>
-			<div class="uael-post-wrapper">
+			<div class="uael-post-wrapper <?php echo wp_kses_post( $this->get_category_name() ); ?>">
 		<?php
 	}
 
@@ -414,6 +542,24 @@ class Skin_Custom extends Skin_Base {
 	private function get_current_ID( $id ) {
 		$newid = apply_filters( 'wpml_object_id', $id, 'elementor_library', TRUE  );
 		return $newid ? $newid : $id;
+	}
+
+	/**
+	 * Get category name.
+	 *
+	 * Adds the category class.
+	 *
+	 * @since 1.0.1
+	 * @access public
+	 */
+	public function get_category_name() {
+
+		foreach ( get_the_category( get_the_ID() ) as $category ) {
+
+			$category_name = str_replace( ' ', '-', $category->name );
+
+			echo esc_attr( strtolower( $category_name ) ) . ' ';
+		}
 	}
 
 	/**

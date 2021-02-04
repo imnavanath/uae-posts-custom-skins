@@ -7,8 +7,6 @@
 
 	function _equal_height( slider_wrapper ) {
 
-		console.log(slider_wrapper);
-
 		var post_wrapper = slider_wrapper.find('.uael-post-wrapper'),
             post_active = slider_wrapper.find('.slick-active'),
             max_height = -1,
@@ -315,7 +313,7 @@
 	var _callAjax = function( $scope, $obj, $append ) {
 
 		$.ajax({
-			url: uael.ajax_url,
+			url: uael_posts_script.ajax_url,
 			data: {
 				action: 'uael_get_post',
 				page_id : $obj.page_id,
