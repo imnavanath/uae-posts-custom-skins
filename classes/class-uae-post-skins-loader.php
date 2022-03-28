@@ -51,7 +51,7 @@ if ( ! class_exists( 'UAE_Posts_Skin_Loader' ) ) :
 
 			add_action( 'elementor_pro/init', array( $this, 'uae_post_custom_skins_init' ) );
 
-			add_action('elementor/widgets/widgets_registered', array( $this, 'uae_post_custom_skins' ) );
+			add_action('elementor/widgets/register', array( $this, 'uae_post_custom_skins' ) );
         }
 
 		/**
